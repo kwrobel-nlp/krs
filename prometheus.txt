@@ -1,0 +1,12 @@
+python3 predict_lm.py --model xlm-roberta-large --dir data/dev/
+python3 predict_lm.py --model xlm-roberta-large --dir data/test/
+
+python3 predict_lm.py --model "../MODELS/polilshroberta/base" --opi --dir data/test/
+python3 predict_lm.py --model "../MODELS/polilshroberta/large" --opi --dir data/test/
+
+python3 predict_lm.py --model "../MODELS/polilshroberta/large" --opi --dir data/dev/
+
+cd /net/scratch/people/plgkwrobel/poleval2020-task1
+source start.sh
+python3 predict_lm.py --model "../MODELS/polilshroberta/base" --dir data/dev --output polishroberta-base_dev_lm.jsonl
+python3 chose_lm.py polishroberta-base_dev_lm.jsonl
