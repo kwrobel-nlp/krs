@@ -12,7 +12,7 @@ import tqdm
 import numpy as np
 
 if __name__ == '__main__':
-    parser = ArgumentParser(description='Transformer MLM as LM')
+    parser = ArgumentParser(description='Check the longest text')
     parser.add_argument('--model', default='xlm-roberta-large', help='model', required=True)
     parser.add_argument('--dir', help='directory with reference.txt and nbest.txt', required=True)
     parser.add_argument('--opi', action='store_true', help='use OPI tokenizer')
@@ -39,18 +39,24 @@ if __name__ == '__main__':
         getattr(tokenizer, "_tokenizer").post_processor = RobertaProcessing(sep=("</s>", 2), cls=("<s>", 0))
 
     sizes = []
+    longest = None
+    longest_size = 0
     for id, utt in tqdm.tqdm(data.items(), desc="Texts"):
         if id in processed_ids: continue
 
         texts = utt['candidates']
 
-        
         for text in texts:
             if args.opi:
                 ids = torch.tensor([tokenizer.encode(text).ids])
             else:
                 ids = tokenizer.encode(text, return_tensors="pt")
 
-            sizes.append(ids.size(1))
+            size = ids.size(1)
+            sizes.append(size)
+            if size > longest_size:
+                longest_size = size
+                longest = text
 
+    print(longest)
     print(np.mean(sizes), np.max(sizes))

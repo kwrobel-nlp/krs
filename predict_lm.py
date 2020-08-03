@@ -13,9 +13,11 @@ import tqdm
 if __name__ == '__main__':
     parser = ArgumentParser(description='Transformer MLM as LM')
     parser.add_argument('--model', default='xlm-roberta-large', help='model', required=True)
-    parser.add_argument('--dir', help='directory with reference.txt and nbest.txt', required=True)
+    parser.add_argument('--nbest', help='path to nbest.txt', required=True)
     parser.add_argument('--output', help='Output path to JSONL', required=True)
+    parser.add_argument('--reference', default=None, help='path to reference.txt')
     parser.add_argument('--nocuda', action='store_true', help='no CUDA')
+    parser.add_argument('--batch_size', type=int, default=32, help='batch size')
     parser.add_argument('--half', action='store_true', help='use model.half() (may cause token prob 0.0)')
     parser.add_argument('--opi', action='store_true', help='use OPI tokenizer')
     parser.add_argument('-c', default=None, help='continue using path to JSONL')
@@ -28,10 +30,9 @@ if __name__ == '__main__':
     print('CUDA', torch.cuda.is_available(), file=sys.stderr)
 
     model_name = args.model
-    directory = args.dir
-    data = load_both(f'{directory}/reference.txt', f'{directory}/nbest.txt')
+    data = load_both(args.reference, args.nbest)
 
-    processed_ids=set()
+    processed_ids = set()
     if args.c is not None:
         with jsonlines.open(args.c) as reader:
             for obj in reader:
@@ -60,7 +61,7 @@ if __name__ == '__main__':
     with jsonlines.open(args.output, mode='w', flush=True) as writer:
         for id, utt in tqdm.tqdm(data.items(), desc="Texts"):
             if id in processed_ids: continue
-            
+
             texts = utt['candidates']
 
             texts_ids = []
@@ -73,7 +74,8 @@ if __name__ == '__main__':
 
             utt['probas'] = []
             for i, text_ids in enumerate(tqdm.tqdm(texts_ids, desc="Cands")):
-                logprob, length, logprob_wo0 = text_prob(text_ids, tokenizer.mask_token_id, model, device)
+                logprob, length, logprob_wo0 = text_prob(text_ids, tokenizer.mask_token_id, model, device,
+                                                         args.batch_size)
                 utt['probas'].append((logprob, length, logprob_wo0))
 
             writer.write(utt)

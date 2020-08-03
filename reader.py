@@ -33,10 +33,8 @@ def load(path, data):
 
 def load_both(ref, nbest):
     data = collections.defaultdict(dict)
-    try:
+    if ref:
         load(ref, data)
-    except FileNotFoundError:
-        print("No reference data", file=sys.stderr)
     load(nbest, data)
     data = dict(data)
     return data

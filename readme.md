@@ -10,13 +10,14 @@ Data available at: http://poleval.pl/tasks/task1/
 
 ### 2. Calculate probabilities
 ```
-python3 predict_lm.py --model xlm-roberta-base --dir data/test2 --output xlm-roberta-base_test2_lm.jsonl
+python3 predict_lm.py --model xlm-roberta-base --nbest data/test2/nbest.txt --output data/test2/xlm-roberta-base_lm.jsonl
 ```
-For PolishRoberta argument `--opi` is needed.
+* for PolishRoberta argument `--opi` is needed.
+* add `--referenece data/test2/reference.txt` to calculate WER
 
 ### 3. Choose best
 ```
-python3 chose_lm.py xlm-roberta-base_test2_lm.jsonl 2>/dev/null > predictions.txt
+python3 chose_lm.py data/test2/xlm-roberta-base_lm.jsonl 2>/dev/null > predictions.txt
 ```
 
 ## Results
@@ -34,4 +35,3 @@ python3 chose_lm.py xlm-roberta-base_test2_lm.jsonl 2>/dev/null > predictions.tx
 ## TODO
 
 * support for longer texts
-* support for batching
