@@ -18,6 +18,7 @@ if __name__ == '__main__':
     parser.add_argument('--nocuda', action='store_true', help='no CUDA')
     parser.add_argument('--half', action='store_true', help='use model.half() (may cause token prob 0.0)')
     parser.add_argument('--opi', action='store_true', help='use OPI tokenizer')
+    parser.add_argument('-c', default=None, help='continue using path to JSONL')
     args = parser.parse_args()
 
     device = 'cuda'
@@ -29,6 +30,12 @@ if __name__ == '__main__':
     model_name = args.model
     directory = args.dir
     data = load_both(f'{directory}/reference.txt', f'{directory}/nbest.txt')
+
+    processed_ids=set()
+    if args.c is not None:
+        with jsonlines.open(args.c) as reader:
+            for obj in reader:
+                processed_ids.add(obj['id'])
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
     model = AutoModelForMaskedLM.from_pretrained(model_name)
@@ -52,6 +59,8 @@ if __name__ == '__main__':
     count = 0
     with jsonlines.open(args.output, mode='w', flush=True) as writer:
         for id, utt in tqdm.tqdm(data.items(), desc="Texts"):
+            if id in processed_ids: continue
+            
             texts = utt['candidates']
 
             texts_ids = []

@@ -30,3 +30,8 @@ python3 chose_lm.py xlm-roberta-base_test2_lm.jsonl 2>/dev/null > predictions.tx
 | xlm-roberta-large + preprocess   |  8.53% |  8.14% |        |
 | polishroberta-large + preprocess |  **7.77%** |  **7.81%** |        |
 | polishroberta-base + preprocess  |  8.15% |  7.99% |        |
+
+## TODO
+
+* support for longer texts
+* support for batching
