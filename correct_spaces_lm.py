@@ -29,6 +29,9 @@ if __name__ == '__main__':
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
     model = AutoModelForMaskedLM.from_pretrained(model_name)
 
+    from tokenizers import SentencePieceBPETokenizer
+    SentencePieceBPETokenizer
+
     if args.opi:
         from tokenizers import SentencePieceBPETokenizer
         from tokenizers.processors import RobertaProcessing
