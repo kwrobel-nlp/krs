@@ -19,6 +19,10 @@ python3 predict_lm.py --model xlm-roberta-base --nbest data/test2/nbest.txt --ou
 ```
 python3 chose_lm.py data/test2/xlm-roberta-base_lm.jsonl 2>/dev/null > predictions.txt
 ```
+### 4. Correct spaces (optional)
+```
+python3 correct_spaces_lm.py --model xlm-roberta-base --path predictions.txt > predictions_spaces.txt
+```
 
 ## Results
 
@@ -29,8 +33,11 @@ python3 chose_lm.py data/test2/xlm-roberta-base_lm.jsonl 2>/dev/null > predictio
 | xlm-roberta-large                |  9.25% |  8.86% |        |
 | xlm-roberta-large ppl            |  9.68% |  9.44% |        |
 | xlm-roberta-large + preprocess   |  8.53% |  8.14% |        |
-| polishroberta-large + preprocess |  **7.77%** |  **7.81%** |        |
 | polishroberta-base + preprocess  |  8.15% |  7.99% |        |
+| polishroberta-large + preprocess |  **7.77%** |  **7.81%** |        |
+| polishroberta-large + preprocess + correct spaces | 7.85 | 7.84  |        |
+| xlm-roberta-large + preprocess + correct spaces |   | X  |        |
+
 
 ## TODO
 
